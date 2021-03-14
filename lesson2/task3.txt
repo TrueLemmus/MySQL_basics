@@ -1,0 +1,17 @@
+3. Создайте дамп базы данных example из предыдущего задания, разверните содержимое дампа в новую базу данных sample.
+
+Делаем дамп базы данных
+mysqldump example > example.sql
+
+Заходим в MySQL и создаём базу данных в которую будем загружать дамп
+mysql
+CREATE DATABASE sample;
+exit;
+
+Загружаем дамп в базу данных sample
+mysql sample < example.sql
+
+Смотрим как всё отработало
+mysql
+USE sample;
+SHOW TABLES;
