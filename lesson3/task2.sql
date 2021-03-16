@@ -19,11 +19,13 @@ CREATE TABLE user_posts (
 
 -- таблица чёрного списка
 CREATE TABLE blacklist (
-  blacklist_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   user_id BIGINT UNSIGNED NOT NULL,
   banned_user_id BIGINT UNSIGNED NOT NULL,
-  INDEX fk_blacklist_user_id_idx (user_id),
-  INDEX fk_blacklist_banned_user_id_idx (banned_user_id),
+  PRIMARY KEY (user_id, banned_user_id),
   CONSTRAINT fk_blacklist_user_id FOREIGN KEY (user_id) REFERENCES users (id),
   CONSTRAINT fk_blacklist_banned_user_id FOREIGN KEY (banned_user_id) REFERENCES users (id)
 );
+
+DROP TABLE blacklist;
+
+DESCRIBE blacklist;
