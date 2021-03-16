@@ -26,3 +26,7 @@ WHERE id = 3;
 UPDATE media_types 
 SET name = 'doc'
 WHERE id = 4;
+
+-- c помощью друга решение было найдено :)
+
+UPDATE media_types SET name = CASE id WHEN 1 THEN 'doc' WHEN 2 THEN 'audio' WHEN 3 THEN 'video' WHEN 4 THEN 'image' END WHERE id IN (1,2,3,4);
