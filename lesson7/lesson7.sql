@@ -6,7 +6,7 @@ USE shop;
  * Составьте список пользователей users, которые осуществили хотя бы один заказ orders в интернет магазине.
 */
 
--- соеденяем две таблицы по полю user_id и id что бы получить необходимый результат для красоты группируем по id и считаем количество заказов
+-- соединяем две таблицы по полю user_id и id что бы получить необходимый результат. Для красоты группируем по id и считаем количество заказов
 SELECT users.name, count(*) AS orders_qnt
 FROM orders JOIN users ON orders.user_id = users.id
 GROUP BY users.id;
@@ -19,7 +19,7 @@ GROUP BY users.id;
 SELECT * FROM products p;
 SELECT * FROM catalogs c;
 
--- соеденяем две таблицы с помощью left join чтобы получить все записи левой таблицы
+-- соединяем две таблицы с помощью left join чтобы получить все записи левой таблицы
 SELECT p.name AS product_name, c.name AS catalog_name 
 FROM products p LEFT JOIN catalogs c 
 ON p.catalog_id = c.id; 
