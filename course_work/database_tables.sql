@@ -7,7 +7,8 @@ USE shop_sample;
 DROP TABLE IF EXISTS customers;
 CREATE TABLE customers (
   customer_id bigint UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255),
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR (255) UNIQUE NOT NULL,
   birthday_at DATE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -17,7 +18,7 @@ DROP TABLE IF EXISTS catalogs;
 CREATE TABLE catalogs (
   catalog_id bigint UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) COMMENT 'Название раздела',
-  UNIQUE unique_name(name(10))
+  UNIQUE unique_name(name)
 );
 
 DROP TABLE IF EXISTS products;
@@ -44,6 +45,8 @@ CREATE TABLE product_attributes (
 	product_id bigint UNSIGNED NOT NULL,
 	attribute_id bigint UNSIGNED NOT NULL,
 	PRIMARY KEY (product_id, attribute_id),
+	INDEX idx_product_attributes_product_id (product_id),
+	INDEX idx_product_attributes_attribute_id (attribute_id),
 	CONSTRAINT fk_product_id FOREIGN KEY (product_id) REFERENCES products (product_id),
 	CONSTRAINT fk_attribute_id FOREIGN KEY (attribute_id) REFERENCES `attributes` (attribute_id)
 );
@@ -91,12 +94,22 @@ CREATE TABLE orders_products (
 
 DROP TABLE IF EXISTS comments;
 CREATE TABLE comments (
+	comment_id bigint UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	product_id bigint UNSIGNED NOT NULL,
 	customer_id bigint UNSIGNED NOT NULL,
+	order_id bigint UNSIGNED NOT NULL,
 	rating SMALLINT NOT NULL, -- SMALLINT для лучшей совместимости и скорости работы.
 	comment varchar(1000), -- количество символов выбрано случайным образом в дальнейшем может быть изменено 
-	PRIMARY KEY (product_id, customer_id),
-	INDEX idx_product_id (product_id),
+	INDEX idx_comments_product_id (product_id),
+	INDEX idx_comments_customer_id (customer_id),
+	INDEX idx_comments_order_id (order_id),
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	UNIQUE unique_comment (product_id, customer_id, order_id), 
 	CONSTRAINT fk_comments_products FOREIGN KEY (product_id) REFERENCES products (product_id),
-	CONSTRAINT fk_comments_customers FOREIGN KEY (customer_id) REFERENCES customers (customer_id)
+	CONSTRAINT fk_comments_customers FOREIGN KEY (customer_id) REFERENCES customers (customer_id),
+	CONSTRAINT fk_comments_orders FOREIGN KEY (order_id) REFERENCES orders (order_id)
 );
+   
+   
+

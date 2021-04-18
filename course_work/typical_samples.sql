@@ -20,3 +20,10 @@ GROUP BY customers.customer_id;
 SELECT p.name AS product_name, c.name AS catalog_name 
 FROM products p LEFT JOIN catalogs c 
 ON p.catalog_id = c.catalog_id ; 
+
+/* Выводим товары соответсвующие определённой категории */
+
+SELECT p.name, p.description, p.price FROM products p 
+JOIN catalogs c ON p.catalog_id = c.catalog_id 
+WHERE c.name = 'Процессоры';
+

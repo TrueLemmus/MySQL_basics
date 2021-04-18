@@ -1,57 +1,35 @@
 USE shop_sample;
 
-
-/* При каждом создании записи в таблицах customers, catalogs и products в таблицу logs помещается время и дата создания записи,
- * название таблицы, идентификатор первичного ключа и содержимое поля name. */
+/* При изменении адреса элетронной почты записываем старую почту в лог.
+ * Email взят для примера таким же способом можно вести лог любой колонки.
+*/
 
 DROP TABLE IF EXISTS logs;
 CREATE TABLE logs (
-	created_at DATETIME NOT NULL,
-	table_name VARCHAR(45) NOT NULL,
-	str_id BIGINT(20) NOT NULL,
-	name_value VARCHAR(45) NOT NULL
+	updeted_at DATETIME NOT NULL,
+	customer_id bigint UNSIGNED NOT NULL,
+	customer_name VARCHAR(255) NOT NULL,
+	new_email VARCHAR(255) NOT NULL,
+	old_email VARCHAR(255) NOT NULL
 ) ENGINE = ARCHIVE;
 
 
--- триггер для user
 DROP TRIGGER IF EXISTS watchlog_customers;
 
 DELIMITER //
 
-CREATE TRIGGER watchlog_customers AFTER INSERT ON customers
+CREATE TRIGGER watchlog_customers AFTER UPDATE ON customers
 FOR EACH ROW
 BEGIN
-	INSERT INTO logs (created_at, table_name, str_id, name_value)
-	VALUES (NOW(), 'customers', NEW.customer_id, NEW.name);
+	INSERT INTO logs (updeted_at, customer_id, customer_name, new_email, old_email)
+	VALUES (NOW(), OLD.customer_id, OLD.name, NEW.email, OLD.email);
 END //
 
 DELIMITER ;
 
 
--- триггер для catalogs
-DROP TRIGGER IF EXISTS watchlog_catalogs;
+UPDATE customers 
+SET email = 'somenew3@mail.ru'
+WHERE customer_id = 1;
 
-DELIMITER //
-
-CREATE TRIGGER watchlog_catalogs AFTER INSERT ON catalogs
-FOR EACH ROW
-BEGIN
-	INSERT INTO logs (created_at, table_name, str_id, name_value)
-	VALUES (NOW(), 'catalogs', NEW.catalog_id, NEW.name);
-END //
-
-DELIMITER ;
-
-
--- триггер для products
-DELIMITER //
-
-CREATE TRIGGER watchlog_products AFTER INSERT ON products
-FOR EACH ROW
-BEGIN
-	INSERT INTO logs (created_at, table_name, str_id, name_value)
-	VALUES (NOW(), 'products', NEW.product_id, NEW.name);
-END //
-
-DELIMITER ;
-
+SELECT * FROM logs;
